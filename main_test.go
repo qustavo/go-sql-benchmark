@@ -8,6 +8,7 @@ import (
 	"github.com/gchaincl/dotsql"
 	"github.com/jinzhu/gorm"
 	"github.com/jmoiron/sqlx"
+	"github.com/lann/squirrel"
 
 	"testing"
 )
@@ -97,6 +98,22 @@ func BenchmarkDotSQL(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		rows, err := dot.Query(db, "select")
+		panicIfErr(err)
+
+		for rows.Next() {
+			err := rows.Scan(&t1, &t2)
+			panicIfErr(err)
+		}
+	}
+}
+
+func BenchmarkSqrl(b *testing.B) {
+	db := test.db
+
+	var t1, t2 string
+
+	for i := 0; i < b.N; i++ {
+		rows, err := squirrel.Select("*").From("users").RunWith(db).Query()
 		panicIfErr(err)
 
 		for rows.Next() {
