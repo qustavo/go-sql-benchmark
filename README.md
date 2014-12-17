@@ -6,7 +6,7 @@ Benchmark among different SQL libraries in Go
 
 Go-sql-benchmark will compare the following SQL libraries:
 
-- https://github.com/mattn/go-sqlite3
+- raw database/sql
 - https://github.com/gchaincl/dotsql
 - https://github.com/jinzhu/gorm
 - https://github.com/jmoiron/sqlx
