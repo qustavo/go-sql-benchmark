@@ -5,6 +5,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"os"
 
+	"github.com/astaxie/beego/orm"
 	"github.com/gchaincl/dotsql"
 	"github.com/jinzhu/gorm"
 	"github.com/jmoiron/sqlx"
@@ -14,9 +15,10 @@ import (
 )
 
 type Test struct {
-	db     *sql.DB
-	dbx    *sqlx.DB
-	dbgorm gorm.DB
+	db         *sql.DB
+	dbx        *sqlx.DB
+	dbgorm     gorm.DB
+	dbbeegoorm orm.Ormer
 }
 
 var test Test = Test{}
@@ -25,10 +27,23 @@ type User struct {
 	A, B string
 }
 
+// Model Struct
+type BeeUser struct {
+	Id int `orm:"auto"`
+	A  string
+	B  string
+}
+
 func panicIfErr(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func init() {
+	orm.RegisterDriver("sqlite3", orm.DR_Sqlite)
+	orm.RegisterDataBase("default", "sqlite3", ":memory:")
+	orm.RegisterModel(new(BeeUser))
 }
 
 func TestMain(m *testing.M) {
@@ -52,6 +67,12 @@ func TestMain(m *testing.M) {
 	test.dbgorm.CreateTable(user)
 	test.dbgorm.Create(user)
 
+	err = orm.RunSyncdb("default", true, false)
+	panicIfErr(err)
+	test.dbbeegoorm = orm.NewOrm()
+	beeuser := &BeeUser{A: "1", B: "2"}
+	test.dbbeegoorm.Insert(beeuser)
+
 	os.Exit(m.Run())
 }
 
@@ -68,6 +89,18 @@ func BenchmarkNative(b *testing.B) {
 			err := rows.Scan(&t1, &t2)
 			panicIfErr(err)
 		}
+	}
+}
+
+func BenchmarkBeego(b *testing.B) {
+	db := test.dbbeegoorm
+	db.Using("default") // Using default, you can use other database
+
+	for i := 0; i < b.N; i++ {
+		var users []*BeeUser
+		qs := test.dbbeegoorm.QueryTable("bee_user")
+		_, err := qs.All(&users)
+		panicIfErr(err)
 	}
 }
 
