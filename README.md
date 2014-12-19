@@ -28,6 +28,7 @@ Benchmark Output:
 
     PASS
     BenchmarkNative   100000         13476 ns/op         376 B/op         14 allocs/op
+    BenchmarkBeego     50000         32154 ns/op        1813 B/op         74 allocs/op
     BenchmarkSqlX     100000         16334 ns/op         537 B/op         17 allocs/op
     BenchmarkDotSQL   100000         13361 ns/op         376 B/op         14 allocs/op
     BenchmarkSqrl      50000         29306 ns/op        2564 B/op         53 allocs/op
