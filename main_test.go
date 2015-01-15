@@ -2,8 +2,9 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"os"
+
+	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/astaxie/beego/orm"
 	"github.com/gchaincl/dotsql"
@@ -92,18 +93,6 @@ func BenchmarkNative(b *testing.B) {
 	}
 }
 
-func BenchmarkBeego(b *testing.B) {
-	db := test.dbbeegoorm
-	db.Using("default") // Using default, you can use other database
-
-	for i := 0; i < b.N; i++ {
-		var users []*BeeUser
-		qs := test.dbbeegoorm.QueryTable("bee_user")
-		_, err := qs.All(&users)
-		panicIfErr(err)
-	}
-}
-
 func BenchmarkSqlX(b *testing.B) {
 	db := test.dbx
 	var user User
@@ -153,6 +142,18 @@ func BenchmarkSqrl(b *testing.B) {
 			err := rows.Scan(&t1, &t2)
 			panicIfErr(err)
 		}
+	}
+}
+
+func BenchmarkBeego(b *testing.B) {
+	db := test.dbbeegoorm
+	db.Using("default") // Using default, you can use other database
+
+	for i := 0; i < b.N; i++ {
+		var users []*BeeUser
+		qs := test.dbbeegoorm.QueryTable("bee_user")
+		_, err := qs.All(&users)
+		panicIfErr(err)
 	}
 }
 
