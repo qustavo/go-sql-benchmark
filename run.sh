@@ -45,5 +45,6 @@ go get -v github.com/gchaincl/dotsql
 go get -v github.com/jinzhu/gorm
 go get -v github.com/jmoiron/sqlx
 go get -v github.com/lann/squirrel
+go get -v github.com/astaxie/beego
 
 go test -bench . -benchmem
