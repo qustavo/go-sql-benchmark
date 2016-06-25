@@ -32,9 +32,9 @@ vercomp () {
 }
 
 GOVERSION=`go version|awk '{print $3}'| sed 's/go//'`
-vercomp $GOVERSION '1.4'
+vercomp $GOVERSION '1.6'
 if [ $? == 2 ]; then
-	echo "You need to run this with go version >= 1.4"
+	echo "You need to run this with go version >= 1.6"
 	exit 1
 fi
 

@@ -18,7 +18,7 @@ import (
 type Test struct {
 	db         *sql.DB
 	dbx        *sqlx.DB
-	dbgorm     gorm.DB
+	dbgorm     *gorm.DB
 	dbbeegoorm orm.Ormer
 }
 
@@ -42,7 +42,7 @@ func panicIfErr(err error) {
 }
 
 func init() {
-	orm.RegisterDriver("sqlite3", orm.DR_Sqlite)
+	orm.RegisterDriver("sqlite3", orm.DRSqlite)
 	orm.RegisterDataBase("default", "sqlite3", ":memory:")
 	orm.RegisterModel(new(BeeUser))
 }
